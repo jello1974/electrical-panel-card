@@ -1,0 +1,50 @@
+# Exemplu de configurare (română). Înlocuiește entitățile cu ale tale — sau folosește editorul vizual.
+type: custom:electrical-panel-card
+language: ro
+theme: dark
+columns: 5
+confirm: false
+rows:
+  - label: General · Bucătărie
+    modules:
+      - model: rcd2
+        name: Diferențial casă
+        entity: switch.diferential_casa
+        power: sensor.putere_casa
+        amps: 40
+        sensitivity: 30
+        voltage: 230
+        confirm_off: true
+      - model: mcb1
+        name: Prize bucătărie
+        entity: switch.prize_bucatarie
+        power: sensor.consum_prize_bucatarie
+        curve: C
+        amps: 16
+        voltage: 230
+      - model: mcb1
+        name: Lumină bucătărie
+        entity: switch.lumina_bucatarie
+        power: sensor.consum_lumina_bucatarie
+        curve: B
+        amps: 10
+        voltage: 230
+  - label: Living
+    modules:
+      - model: mcb1
+        name: Prize living
+        entity: switch.prize_living
+        power: sensor.consum_prize_living
+        curve: C
+        amps: 16
+        voltage: 230
+        voltage_sensor: sensor.tensiune_living
+        current_sensor: sensor.curent_living
+        temp_sensor: sensor.temperatura_siguranta_living
+      - model: mcb2
+        name: Pompă de căldură
+        entity: switch.pompa_caldura
+        power: sensor.consum_pompa_caldura
+        curve: C
+        amps: 25
+        voltage: 230

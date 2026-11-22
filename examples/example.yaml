@@ -1,0 +1,63 @@
+# Example dashboard config (English). Replace entities with yours — or use the visual editor.
+type: custom:electrical-panel-card
+language: en
+theme: dark
+columns: 5
+confirm: false
+rows:
+  - label: Main · Kitchen
+    modules:
+      - model: rcd2
+        name: Main RCD
+        entity: switch.main_rcd
+        power: sensor.house_power
+        amps: 40
+        sensitivity: 30
+        voltage: 230
+        confirm_off: true
+      - model: mcb1
+        name: Kitchen sockets
+        entity: switch.kitchen_sockets
+        power: sensor.kitchen_sockets_power
+        curve: C
+        amps: 16
+        voltage: 230
+      - model: mcb1
+        name: Kitchen lights
+        entity: switch.kitchen_lights
+        power: sensor.kitchen_lights_power
+        curve: B
+        amps: 10
+        voltage: 230
+  - label: Living room
+    modules:
+      - model: mcb1
+        name: Sockets
+        entity: switch.living_sockets
+        power: sensor.living_sockets_power
+        curve: C
+        amps: 16
+        voltage: 230
+        voltage_sensor: sensor.living_voltage
+        current_sensor: sensor.living_current
+        temp_sensor: sensor.living_breaker_temperature
+      - model: mcb2
+        name: Heat pump
+        entity: switch.heat_pump
+        power: sensor.heat_pump_power
+        curve: C
+        amps: 25
+        voltage: 230
+  - label: Meter
+    modules:
+      - model: meter
+        name: Total
+        power: sensor.house_power
+        energy: sensor.house_energy
+      - model: mcb3
+        name: 3-phase oven
+        entity: switch.oven
+        power: sensor.oven_power
+        curve: C
+        amps: 16
+        voltage: 400
