@@ -25,5 +25,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: node --check dist/tablou-electric-card.js
+      - run: node --check dist/electrical-panel-card.js
       - run: node scripts/check-i18n.js

@@ -19,11 +19,11 @@ jobs:
       - name: Check that the tag matches VERSION in the card
         run: |
           TAG="${GITHUB_REF_NAME#v}"
-          grep -q "const VERSION = '${TAG}';" dist/tablou-electric-card.js || { echo "VERSION in dist/tablou-electric-card.js does not match tag ${TAG}"; exit 1; }
-      - run: node --check dist/tablou-electric-card.js
+          grep -q "const VERSION = '${TAG}';" dist/electrical-panel-card.js || { echo "VERSION in dist/tablou-electric-card.js does not match tag ${TAG}"; exit 1; }
+      - run: node --check dist/electrical-panel-card.js
       - run: node scripts/check-i18n.js
       - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/tablou-electric-card.js
+          files: dist/electrical-panel-card.js
           generate_release_notes: true
