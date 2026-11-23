@@ -3,7 +3,7 @@
 [🇬🇧 English](README.md) · 🇷🇴 Română
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
-[![Validate](https://github.com/jello1974/electrical-panel-card/actions/workflows/validate.yaml/badge.svg)](https://github.com/jello1974/electrical-panel-card/actions/workflows/validate.yaml)
+[![Validate](https://github.com/jello1974/electrical-panel-card/actions/workflows/validate.yaml/badge.svg)](https://github.com/jello1974/electrical-panel-card/actions/workflows/validate.yml)
 
 Card pentru Home Assistant care desenează un **tablou electric realist**: siguranțe, diferențiale, întrerupător general și contor, în SVG, pe șine DIN, cu manete care se mișcă, ferestre LCD și un **editor vizual complet** — fără YAML.
 
@@ -32,7 +32,7 @@ Card pentru Home Assistant care desenează un **tablou electric realist**: sigur
 
 ### HACS (recomandat)
 
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://home-assistant.io)](https://home-assistant.io)
+[![Open in My Home Assistant](https://shields.io)](https://home-assistant.io)
 
 1. Apasă pe butonul **Open in My Home Assistant** de mai sus — **sau** adaugă manual `https://github.com/jello1974/electrical-panel-card` din **HACS → ⋮ → Depozite personalizate** (*Custom repositories*) cu categoria **Dashboard** (numită și *Lovelace*).
 2. Caută **Electrical Panel Card**, apasă **Descarcă**, apoi reîncarcă browserul (refresh forțat).

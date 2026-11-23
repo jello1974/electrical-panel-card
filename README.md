@@ -3,7 +3,7 @@
 🇬🇧 English · [🇷🇴 Română](README.ro.md)
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
-[![Validate](https://github.com/jello1974/electrical-panel-card/actions/workflows/validate.yaml/badge.svg)](https://github.com/jello1974/electrical-panel-card/actions/workflows/validate.yaml)
+[![Validate](https://github.com/jello1974/electrical-panel-card/actions/workflows/validate.yaml/badge.svg)](https://github.com/jello1974/electrical-panel-card/actions/workflows/validate.yml)
 
 A realistic **electrical panel** card for Home Assistant. Your breakers, RCDs, main switch and meter are drawn in SVG on DIN rails, with moving handles, LCD readouts and a **full visual editor** — no YAML required.
 
@@ -31,8 +31,7 @@ A realistic **electrical panel** card for Home Assistant. Your breakers, RCDs, m
 ## Installation
 
 ### HACS (recommended)
-
-[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://home-assistant.io)](https://home-assistant.io)
+[![Open in My Home Assistant](https://shields.io)](https://home-assistant.io)
 
 1. Click the **Open in My Home Assistant** button above — **or** manually add `https://github.com/jello1974/electrical-panel-card` via **HACS → ⋮ → Custom repositories** with category **Dashboard** (also called *Lovelace*).
 2. Search for **Electrical Panel Card**, click **Download**, then reload your browser (hard refresh).
