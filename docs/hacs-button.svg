@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="248" height="40" viewBox="0 0 248 40">
+  <rect width="248" height="40" rx="6" fill="#03A9F4"/>
+  <path d="M22 10L12 19h3v9h5v-6h4v6h5v-9h3L22 10z" fill="#FFFFFF"/>
+  <text x="42" y="25" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#FFFFFF">Open in My Home Assistant</text>
+</svg>
