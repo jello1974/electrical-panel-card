@@ -31,10 +31,20 @@ A realistic **electrical panel** card for Home Assistant. Your breakers, RCDs, m
 ## Installation
 
 ### HACS (recommended)
+
 [![Open in My Home Assistant](docs/hacs-button.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jello1974&repository=electrical-panel-card&category=plugin)
 
-1. Click the **Open in My Home Assistant** button above — **or** manually add `https://github.com/jello1974/electrical-panel-card` via **HACS → ⋮ → Custom repositories** with category **Dashboard** (also called *Lovelace*).
-2. Search for **Electrical Panel Card**, click **Download**, then reload your browser (hard refresh).
+1. Open **HACS** in Home Assistant, search for **Electrical Panel Card**, and click **Download** (or click the **Open in My Home Assistant** button above).
+2. Reload your browser (hard refresh).
+
+<details><summary>Fallback: Manual installation via Custom Repository</summary>
+
+If the card does not appear in HACS search yet:
+1. Open **HACS → ⋮ → Custom repositories**.
+2. Add `https://github.com/jello1974/electrical-panel-card` with category **Dashboard** (also called *Lovelace*).
+3. Search for **Electrical Panel Card**, click **Download**, then reload your browser (hard refresh).
+
+</details>
 
 > HACS adds the dashboard resource automatically. If you use YAML mode for resources, add:
 > ```yaml
@@ -43,9 +53,10 @@ A realistic **electrical panel** card for Home Assistant. Your breakers, RCDs, m
 >     type: module
 > ```
 
+
 ### Manual
 
-1. Download `electrical-panel-card.js` from the [latest release](https://github.com/YOUR_GITHUB_USER/electrical-panel-card/releases/latest) and copy it to `/config/www/`.
+1. Download `electrical-panel-card.js` from the [latest release](https://github.com/jello1974/electrical-panel-card/releases/latest) and copy it to `/config/www/`.
 2. **Settings → Dashboards → ⋮ → Resources → Add resource**: URL `/local/electrical-panel-card.js`, type **JavaScript module**.
 3. Hard-refresh the browser. To bypass the cache after an update use `/local/electrical-panel-card.js?v=2`, `?v=3`, …
 

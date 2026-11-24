@@ -1019,7 +1019,7 @@ if (typeof customElements !== 'undefined') {
     window.customCards.push({
       type: 'electrical-panel-card', name: 'Electrical Panel Card',
       description: 'Realistic electrical panel (SVG): breakers, RCDs, meter, visual editor. EN / RO. · Tablou electric realist: siguranțe, diferențiale, contor, editor vizual.',
-      documentationURL: 'https://github.com/YOUR_GITHUB_USER/electrical-panel-card',
+      documentationURL: 'https://github.com/jello1974/electrical-panel-card',
     });
   }
 }
