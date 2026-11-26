@@ -1,10 +1,10 @@
 /*
  * Electrical Panel Card — electrical panel card for Home Assistant (Lovelace)
  * Realistic SVG breaker panel: RCDs, breakers, meters, blanks — with a visual editor.
- * Languages: English (default) and Română. Set `language: auto` to follow the Home Assistant language.
+ * Languages: English (default), Română, and Français (thanks to @Nono01360). Set `language: auto` to follow the Home Assistant language.
  * No external dependencies. License: MIT.
  */
-const VERSION = '1.0.1';
+const VERSION = '1.0.2';
 const SW = 108;   // latimea unui slot (unitati SVG)
 const MH = 200;   // inaltimea unui modul
 const SQ3 = Math.sqrt(3);
@@ -121,6 +121,48 @@ const I18N = {
     'ed.tap': 'La atingere', 'ed.tap.toggle': 'Comută', 'ed.tap.more': 'Deschide detalii', 'ed.tap.none': 'Nimic',
     'ed.handle': 'Culoare mâner', 'ed.confirm_mod': 'Confirmare la comutare', 'ed.confirm.yes': 'Întreabă (pornire și oprire)',
     'ed.confirm.no': 'Nu întreba', 'ed.confirm_off': 'Întreabă doar la oprire',
+  },
+  fr: {
+    'lang.name': 'Français',
+    title: 'TABLEAU ÉLECTRIQUE',
+    'err.rows': 'La configuration doit contenir « rows » (une liste de rangées, chacune avec « modules »).',
+    'dlg.off.title': 'Couper ce disjoncteur ?', 'dlg.on.title': 'Enclencher ce disjoncteur ?',
+    'dlg.current': 'Consommation actuelle : {v}',
+    'dlg.warn': 'Couper ce disjoncteur interrompt l\u2019alimentation des circuits qu\u2019il protège.',
+    'dlg.off': 'Couper', 'dlg.on': 'Enclencher', 'dlg.cancel': 'Annuler',
+    'stub.row': 'Rangée 1', 'stub.rcd': 'ID', 'stub.sockets': 'Prises', 'stub.lights': 'Éclairage',
+    'model.mcb1': 'Disjoncteur 1P', 'model.mcb2': 'Disjoncteur 2P (1P+N)', 'model.mcb3': 'Disjoncteur 3P',
+    'model.mcb4': 'Disjoncteur 4P (3P+N)', 'model.rcbo': 'Disjoncteur différentiel (1P+N)', 'model.rcd2': 'Interrupteur différentiel 2P', 'model.rcd4': 'Interrupteur différentiel 4P',
+    'model.main': 'Interrupteur sectionneur général', 'model.meter': 'Compteur / afficheur de consommation', 'model.blank': 'Obturateur',
+    blank_chip: 'obturateur',
+    'name.breaker': 'Disjoncteur', 'name.rcd': 'Différentiel', 'name.main': 'Général', 'name.meter': 'Compteur',
+    'ed.general': 'Paramètres généraux', 'ed.title': 'Titre', 'ed.language': 'Langue', 'ed.lang.auto': 'Automatique (langue de Home Assistant)',
+    'ed.theme': 'Thème', 'ed.theme.dark': 'Sombre', 'ed.theme.light': 'Clair',
+    'ed.columns': 'Modules par rail (vide = auto)', 'ed.auto': 'auto', 'ed.eg': 'ex.',
+    'ed.max': 'Consommation max. par défaut (W)', 'ed.display': 'Affichage LCD',
+    'ed.display.power': 'Puissance (W / kW)', 'ed.display.current': 'Intensité (A)',
+    'ed.show_title': 'Afficher le titre', 'ed.show_ducts': 'Goulottes de câblage', 'ed.show_lcd': 'Écran LCD avec consommation',
+    'ed.show_ratings': 'Afficher le calibre du disjoncteur', 'ed.fill_blanks': 'Combler les rails avec des obturateurs',
+    'ed.readonly': 'Lecture seule (aucune commutation)', 'ed.confirm': 'Confirmer avant d\u2019enclencher/couper (tous les disjoncteurs)',
+    'ed.row_label': 'Rangée {n} – libellé', 'ed.row_up': 'Monter la rangée', 'ed.row_down': 'Descendre la rangée',
+    'ed.row_del': 'Supprimer la rangée', 'ed.row_del_confirm': 'Supprimer toute la rangée et ses modules ?',
+    'ed.row_empty': 'Rangée vide – ajoutez un module ci-dessous.', 'ed.add_module': '+ Ajouter un module', 'ed.add_row': '+ Ajouter une rangée',
+    'ed.module': 'Module {n}', 'ed.left': 'Déplacer à gauche', 'ed.right': 'Déplacer à droite', 'ed.dup': 'Dupliquer', 'ed.del': 'Supprimer',
+    'ed.model': 'Modèle', 'ed.name': 'Nom (sur l\u2019étiquette ; \\n = saut de ligne)', 'ed.curve': 'Courbe de déclenchement',
+    'ed.amps': 'Intensité max. (A)', 'ed.voltage': 'Tension (V)', 'ed.sens': 'Sensibilité (mA)', 'ed.poles': 'Pôles',
+    'ed.slots': 'Emplacements utilisés', 'ed.rating': 'Texte du module (remplacement)',
+    'ed.ent.switch': 'Entité de commutation (switch/light)', 'ed.ent.power': 'Capteur de consommation (W)', 'ed.ent.power_total': 'Capteur de puissance totale',
+    'ed.ent.energy': 'Capteur d\u2019énergie (kWh) – facultatif', 'ed.ent.voltage': 'Capteur de tension (V) – facultatif',
+    'ed.ent.current': 'Capteur d\u2019intensité (A) – facultatif', 'ed.ent.temp': 'Capteur de température – facultatif',
+    'ed.sensors_hint': 'La tension, l\u2019intensité et la température s\u2019affichent sur le LCD uniquement si elles sont définies. Sans capteur de consommation, la puissance est calculée par tension × intensité (1P/2P uniquement).',
+    'ed.hint.rated': 'Puissance nominale : {kw} kW ({k}{v} V × {a} A) · jaune dès {y} W · rouge dès {r} W',
+    'ed.hint.manual': 'Puissance max. : {m} W (définissez le calibre en ampères pour la calculer automatiquement) · jaune dès {y} W · rouge dès {r} W',
+    'ed.max_over': 'Consommation max. (W) – remplacement', 'ed.yellow': 'Seuil jaune (W)', 'ed.red': 'Seuil rouge (W)',
+    'ed.t_yellow': 'Température – seuil jaune (°C)', 'ed.t_red': 'Température – seuil rouge (°C)',
+    'ed.mod_display': 'Affichage LCD (module)', 'ed.same_general': 'Identique aux paramètres généraux',
+    'ed.tap': 'Au clic', 'ed.tap.toggle': 'Basculer', 'ed.tap.more': 'Ouvrir les détails', 'ed.tap.none': 'Aucune action',
+    'ed.handle': 'Couleur de la manette', 'ed.confirm_mod': 'Confirmer au basculement', 'ed.confirm.yes': 'Demander (enclenchement et coupure)',
+    'ed.confirm.no': 'Ne pas demander', 'ed.confirm_off': 'Demander uniquement à la coupure',
   },
 };
 

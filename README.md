@@ -24,7 +24,7 @@ A realistic **electrical panel** card for Home Assistant. Your breakers, RCDs, m
 - ⚡ **Optional sensors** per module: voltage, current and temperature — shown only when set.
 - 🧮 **Automatic limits**: max power is computed from *voltage × current rating* (×√3 for 3-phase) — or set your own thresholds.
 - 🛡️ **Safety**: optional confirmation dialog before switching (globally or per breaker), read-only mode, long-press for details.
-- 🌍 **English and Romanian**, auto-detected from your Home Assistant language (or forced with `language:`).
+- 🌍 **English, Romanian, and French**, auto-detected from Home Assistant's language (or forced with `language:`).
 - 🎨 Dark and light panel themes; responsive SVG that scales with the card.
 - 📦 No dependencies (no button-card, no card-mod).
 
@@ -72,7 +72,7 @@ Everything is also available in YAML — see [`examples/example.yaml`](examples/
 
 ```yaml
 type: custom:electrical-panel-card
-language: auto            # auto | en | ro
+language: auto            # auto | en | ro | fr
 theme: dark               # dark | light
 columns: 5                # modules per rail (empty = auto)
 confirm: false            # ask before switching any breaker
@@ -107,7 +107,7 @@ rows:
 |---|---|---|
 | `rows` | – | **Required.** List of rows (see below). |
 | `title` | translated | Title on the top plate. |
-| `language` | `auto` | `auto` (Home Assistant language), `en`, `ro`. |
+| `language` | `auto` | `auto` (Home Assistant language), `en`, `ro`, `fr`. |
 | `theme` | `dark` | `dark` or `light`. |
 | `columns` | auto | Modules per rail. Auto = longest row. |
 | `max` | `6000` | Default max power (W) for modules without a current rating. |

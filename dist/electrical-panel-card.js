@@ -1,10 +1,10 @@
 /*
  * Electrical Panel Card — electrical panel card for Home Assistant (Lovelace)
  * Realistic SVG breaker panel: RCDs, breakers, meters, blanks — with a visual editor.
- * Languages: English (default) and Română. Set `language: auto` to follow the Home Assistant language.
+ * Languages: English (default), Română, and Français (thanks to @Nono01360). Set `language: auto` to follow the Home Assistant language.
  * No external dependencies. License: MIT.
  */
-const VERSION = '1.0.1';
+const VERSION = '1.0.2';
 const SW = 108;   // latimea unui slot (unitati SVG)
 const MH = 200;   // inaltimea unui modul
 const SQ3 = Math.sqrt(3);

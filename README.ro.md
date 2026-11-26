@@ -24,7 +24,7 @@ Card pentru Home Assistant care desenează un **tablou electric realist**: sigur
 - ⚡ **Senzori opționali** pe modul: tensiune, curent și temperatură — apar doar dacă sunt setați.
 - 🧮 **Limite automate**: puterea maximă se calculează din *tensiune × amperaj* (×√3 la trifazat) — sau îți setezi propriile praguri.
 - 🛡️ **Siguranță**: fereastră de confirmare înainte de comutare (global sau per siguranță), mod doar citire, apăsare lungă pentru detalii.
-- 🌍 **Română și engleză**, detectate automat după limba din Home Assistant (sau forțate cu `language:`).
+- 🌍 **Română, engleză și franceză**, detectate automat după limba din Home Assistant (sau forțate cu `language:`).
 - 🎨 Teme întunecată și luminoasă; SVG responsive care se scalează cu cardul.
 - 📦 Fără dependențe (nu cere button-card sau card-mod).
 
@@ -73,7 +73,7 @@ Totul se poate seta și în YAML — vezi [`examples/example.ro.yaml`](examples/
 
 ```yaml
 type: custom:electrical-panel-card
-language: ro             # auto | en | ro
+language: ro             # auto | en | ro | fr
 theme: dark              # dark | light
 columns: 5               # module pe șină (gol = auto)
 confirm: false           # întreabă înainte de comutare (toate siguranțele)
@@ -108,7 +108,7 @@ rows:
 |---|---|---|
 | `rows` | – | **Obligatoriu.** Lista de rânduri (vezi mai jos). |
 | `title` | tradus | Titlul de pe placa de sus. |
-| `language` | `auto` | `auto` (limba din Home Assistant), `en`, `ro`. |
+| `language` | `auto` | `auto` (limba din Home Assistant), `en`, `ro`, `fr`. |
 | `theme` | `dark` | `dark` sau `light`. |
 | `columns` | auto | Module pe șină. Auto = cel mai lung rând. |
 | `max` | `6000` | Puterea maximă implicită (W) pentru module fără amperaj. |
