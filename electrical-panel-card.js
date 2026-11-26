@@ -4,7 +4,7 @@
  * Languages: English (default), Română, and Français (thanks to @Nono01360). Set `language: auto` to follow the Home Assistant language.
  * No external dependencies. License: MIT.
  */
-const VERSION = '1.0.2';
+const VERSION = '1.0.3';
 const SW = 108;   // latimea unui slot (unitati SVG)
 const MH = 200;   // inaltimea unui modul
 const SQ3 = Math.sqrt(3);
@@ -174,7 +174,7 @@ function tr(lang, key, vars) {
   return t;
 }
 
-/** Language selection. Default is English. `language: auto` follows the Home Assistant language; `en` / `ro` force one. */
+/** Language selection. Default is English. `language: auto` follows the Home Assistant language; `en` / `ro` / `fr` force one. */
 function pickLang(cfg, hass) {
   const c = cfg && cfg.language;
   if (c && c !== 'auto' && I18N[c]) return c;
@@ -1060,7 +1060,7 @@ if (typeof customElements !== 'undefined') {
   if (!window.customCards.some((c) => c.type === 'electrical-panel-card')) {
     window.customCards.push({
       type: 'electrical-panel-card', name: 'Electrical Panel Card',
-      description: 'Realistic electrical panel (SVG): breakers, RCDs, meter, visual editor. EN / RO. · Tablou electric realist: siguranțe, diferențiale, contor, editor vizual.',
+      description: 'Realistic electrical panel (SVG): breakers, RCDs, meter, visual editor. Languages: EN / RO / FR.',
       documentationURL: 'https://github.com/jello1974/electrical-panel-card',
     });
   }
