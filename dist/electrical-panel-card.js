@@ -4,7 +4,7 @@
  * Languages: English (default) and Română. Set `language: auto` to follow the Home Assistant language.
  * No external dependencies. License: MIT.
  */
-const VERSION = '1.0.0';
+const VERSION = '1.0.1';
 const SW = 108;   // latimea unui slot (unitati SVG)
 const MH = 200;   // inaltimea unui modul
 const SQ3 = Math.sqrt(3);
