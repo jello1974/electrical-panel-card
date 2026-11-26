@@ -4,7 +4,7 @@
 - Card picker description now lists the supported languages (EN / RO / FR).
 - Documentation: English is the default language; `language: auto` follows the Home Assistant language. French added to the READMEs.
 - README links point to the real repository.
-- Installation: the card is now in the HACS default store, so the README installs it directly from HACS (no custom repository step); badge updated.
+- Installation: HACS first (with the “Open in My Home Assistant” button); the custom-repository steps stay as a collapsed fallback; badge updated.
 
 ## 1.0.2
 - French translation (thanks to [@Nono01360](https://github.com/Nono01360)).

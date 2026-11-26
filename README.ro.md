@@ -32,11 +32,20 @@ Card pentru Home Assistant care desenează un **tablou electric realist**: sigur
 
 ### HACS (recomandat)
 
-Electrical Panel Card este disponibil direct în HACS — nu e nevoie de depozit personalizat.
+[![Open in My Home Assistant](docs/hacs-button.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jello1974&repository=electrical-panel-card&category=plugin)
 
-1. Deschide **HACS** și caută **Electrical Panel Card** (categoria **Dashboard**).
-2. Apasă **Descarcă**.
-3. Reîncarcă browserul (refresh forțat).
+1. Deschide HACS în Home Assistant, caută **Electrical Panel Card** și apasă **Descarcă** (sau apasă butonul **Open in My Home Assistant** de mai sus).
+2. Reîncarcă browserul (refresh forțat).
+
+<details><summary>Alternativă: instalare prin depozit personalizat</summary>
+
+Dacă cardul nu apare încă în căutarea din HACS:
+
+1. Deschide **HACS → ⋮ → Depozite personalizate** (*Custom repositories*).
+2. Adaugă `https://github.com/jello1974/electrical-panel-card` cu categoria **Dashboard** (numită și *Lovelace*).
+3. Caută **Electrical Panel Card**, apasă **Descarcă**, apoi reîncarcă browserul (refresh forțat).
+
+</details>
 
 > HACS adaugă resursa automat. Dacă folosești resurse în mod YAML, adaugă:
 > ```yaml

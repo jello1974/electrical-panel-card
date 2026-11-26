@@ -32,11 +32,20 @@ A realistic **electrical panel** card for Home Assistant. Your breakers, RCDs, m
 
 ### HACS (recommended)
 
-Electrical Panel Card is available in HACS by default — no custom repository needed.
+[![Open in My Home Assistant](docs/hacs-button.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jello1974&repository=electrical-panel-card&category=plugin)
 
-1. Open **HACS** and search for **Electrical Panel Card** (category **Dashboard**).
-2. Click **Download**.
-3. Reload the browser (hard refresh).
+1. Open HACS in Home Assistant, search for **Electrical Panel Card**, and click **Download** (or click the **Open in My Home Assistant** button above).
+2. Reload your browser (hard refresh).
+
+<details><summary>Fallback: Manual installation via Custom Repository</summary>
+
+If the card does not appear in HACS search yet:
+
+1. Open **HACS → ⋮ → Custom repositories**.
+2. Add `https://github.com/jello1974/electrical-panel-card` with category **Dashboard** (also called *Lovelace*).
+3. Search for **Electrical Panel Card**, click **Download**, then reload your browser (hard refresh).
+
+</details>
 
 > HACS adds the dashboard resource automatically. If you use YAML mode for resources, add:
 > ```yaml
