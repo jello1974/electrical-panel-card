@@ -2,8 +2,8 @@
 
 🇬🇧 English · [🇷🇴 Română](README.ro.md)
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
-[![Validate](https://github.com/jello1974/electrical-panel-card/actions/workflows/validate.yaml/badge.svg)](https://github.com/jello1974/electrical-panel-card/actions/workflows/validate.yml)
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://github.com/hacs/integration)
+[![Validate](https://github.com/jello1974/electrical-panel-card/actions/workflows/validate.yaml/badge.svg)](https://github.com/jello1974/electrical-panel-card/actions/workflows/validate.yaml)
 
 A realistic **electrical panel** card for Home Assistant. Your breakers, RCDs, main switch and meter are drawn in SVG on DIN rails, with moving handles, LCD readouts and a **full visual editor** — no YAML required.
 
@@ -24,7 +24,7 @@ A realistic **electrical panel** card for Home Assistant. Your breakers, RCDs, m
 - ⚡ **Optional sensors** per module: voltage, current and temperature — shown only when set.
 - 🧮 **Automatic limits**: max power is computed from *voltage × current rating* (×√3 for 3-phase) — or set your own thresholds.
 - 🛡️ **Safety**: optional confirmation dialog before switching (globally or per breaker), read-only mode, long-press for details.
-- 🌍 **English, Romanian, and French**, auto-detected from Home Assistant's language (or forced with `language:`).
+- 🌍 **English (default), Romanian and French.** Force one with `language:` or use `language: auto` to follow your Home Assistant language.
 - 🎨 Dark and light panel themes; responsive SVG that scales with the card.
 - 📦 No dependencies (no button-card, no card-mod).
 
@@ -32,19 +32,11 @@ A realistic **electrical panel** card for Home Assistant. Your breakers, RCDs, m
 
 ### HACS (recommended)
 
-[![Open in My Home Assistant](docs/hacs-button.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jello1974&repository=electrical-panel-card&category=plugin)
+Electrical Panel Card is available in HACS by default — no custom repository needed.
 
-1. Open **HACS** in Home Assistant, search for **Electrical Panel Card**, and click **Download** (or click the **Open in My Home Assistant** button above).
-2. Reload your browser (hard refresh).
-
-<details><summary>Fallback: Manual installation via Custom Repository</summary>
-
-If the card does not appear in HACS search yet:
-1. Open **HACS → ⋮ → Custom repositories**.
-2. Add `https://github.com/jello1974/electrical-panel-card` with category **Dashboard** (also called *Lovelace*).
-3. Search for **Electrical Panel Card**, click **Download**, then reload your browser (hard refresh).
-
-</details>
+1. Open **HACS** and search for **Electrical Panel Card** (category **Dashboard**).
+2. Click **Download**.
+3. Reload the browser (hard refresh).
 
 > HACS adds the dashboard resource automatically. If you use YAML mode for resources, add:
 > ```yaml
@@ -52,7 +44,6 @@ If the card does not appear in HACS search yet:
 >   - url: /hacsfiles/electrical-panel-card/electrical-panel-card.js
 >     type: module
 > ```
-
 
 ### Manual
 
@@ -72,7 +63,7 @@ Everything is also available in YAML — see [`examples/example.yaml`](examples/
 
 ```yaml
 type: custom:electrical-panel-card
-language: auto            # auto | en | ro | fr
+language: en              # en | ro | fr | auto (auto = Home Assistant language)
 theme: dark               # dark | light
 columns: 5                # modules per rail (empty = auto)
 confirm: false            # ask before switching any breaker
@@ -107,7 +98,7 @@ rows:
 |---|---|---|
 | `rows` | – | **Required.** List of rows (see below). |
 | `title` | translated | Title on the top plate. |
-| `language` | `auto` | `auto` (Home Assistant language), `en`, `ro`, `fr`. |
+| `language` | `en` | `en`, `ro`, `fr`, or `auto` (follow the Home Assistant language). |
 | `theme` | `dark` | `dark` or `light`. |
 | `columns` | auto | Modules per rail. Auto = longest row. |
 | `max` | `6000` | Default max power (W) for modules without a current rating. |
@@ -181,6 +172,8 @@ rows:
 ## Translations
 
 Translations live in the `I18N` object at the top of [`dist/electrical-panel-card.js`](dist/electrical-panel-card.js). To add a language, copy the `en` block, translate the values (keep the keys), run `node scripts/check-i18n.js`, and open a pull request. The language appears automatically in the editor.
+
+Thanks to [@Nono01360](https://github.com/Nono01360) for the French translation.
 
 ## Development
 

@@ -2,8 +2,8 @@
 
 [🇬🇧 English](README.md) · 🇷🇴 Română
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
-[![Validate](https://github.com/jello1974/electrical-panel-card/actions/workflows/validate.yaml/badge.svg)](https://github.com/jello1974/electrical-panel-card/actions/workflows/validate.yml)
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-41BDF5.svg)](https://github.com/hacs/integration)
+[![Validate](https://github.com/jello1974/electrical-panel-card/actions/workflows/validate.yaml/badge.svg)](https://github.com/jello1974/electrical-panel-card/actions/workflows/validate.yaml)
 
 Card pentru Home Assistant care desenează un **tablou electric realist**: siguranțe, diferențiale, întrerupător general și contor, în SVG, pe șine DIN, cu manete care se mișcă, ferestre LCD și un **editor vizual complet** — fără YAML.
 
@@ -24,7 +24,7 @@ Card pentru Home Assistant care desenează un **tablou electric realist**: sigur
 - ⚡ **Senzori opționali** pe modul: tensiune, curent și temperatură — apar doar dacă sunt setați.
 - 🧮 **Limite automate**: puterea maximă se calculează din *tensiune × amperaj* (×√3 la trifazat) — sau îți setezi propriile praguri.
 - 🛡️ **Siguranță**: fereastră de confirmare înainte de comutare (global sau per siguranță), mod doar citire, apăsare lungă pentru detalii.
-- 🌍 **Română, engleză și franceză**, detectate automat după limba din Home Assistant (sau forțate cu `language:`).
+- 🌍 **Engleză (implicit), română și franceză.** Alegi limba cu `language:` sau folosești `language: auto` ca să urmeze limba din Home Assistant.
 - 🎨 Teme întunecată și luminoasă; SVG responsive care se scalează cu cardul.
 - 📦 Fără dependențe (nu cere button-card sau card-mod).
 
@@ -32,19 +32,11 @@ Card pentru Home Assistant care desenează un **tablou electric realist**: sigur
 
 ### HACS (recomandat)
 
-[![Open in My Home Assistant](docs/hacs-button.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=jello1974&repository=electrical-panel-card&category=plugin)
+Electrical Panel Card este disponibil direct în HACS — nu e nevoie de depozit personalizat.
 
-1. Deschide **HACS** în Home Assistant, caută **Electrical Panel Card** și apasă **Descarcă** (sau apasă pe butonul **Open in My Home Assistant** de mai sus).
-2. Reîncarcă browserul (refresh forțat).
-
-<details><summary>Alternativă: Instalare manuală prin Custom Repository</summary>
-
-Dacă cardul nu apare încă la căutare în HACS:
-1. Deschide **HACS → ⋮ → Depozite personalizate** (*Custom repositories*).
-2. Adaugă `https://github.com/jello1974/electrical-panel-card` cu categoria **Dashboard** (numită și *Lovelace*).
-3. Caută **Electrical Panel Card**, apasă **Descarcă**, apoi reîncarcă browserul (refresh forțat).
-
-</details>
+1. Deschide **HACS** și caută **Electrical Panel Card** (categoria **Dashboard**).
+2. Apasă **Descarcă**.
+3. Reîncarcă browserul (refresh forțat).
 
 > HACS adaugă resursa automat. Dacă folosești resurse în mod YAML, adaugă:
 > ```yaml
@@ -52,8 +44,6 @@ Dacă cardul nu apare încă la căutare în HACS:
 >   - url: /hacsfiles/electrical-panel-card/electrical-panel-card.js
 >     type: module
 > ```
-``
-
 
 ### Manual
 
@@ -73,7 +63,7 @@ Totul se poate seta și în YAML — vezi [`examples/example.ro.yaml`](examples/
 
 ```yaml
 type: custom:electrical-panel-card
-language: ro             # auto | en | ro | fr
+language: ro             # en | ro | fr | auto (auto = limba din Home Assistant)
 theme: dark              # dark | light
 columns: 5               # module pe șină (gol = auto)
 confirm: false           # întreabă înainte de comutare (toate siguranțele)
@@ -108,7 +98,7 @@ rows:
 |---|---|---|
 | `rows` | – | **Obligatoriu.** Lista de rânduri (vezi mai jos). |
 | `title` | tradus | Titlul de pe placa de sus. |
-| `language` | `auto` | `auto` (limba din Home Assistant), `en`, `ro`, `fr`. |
+| `language` | `en` | `en`, `ro`, `fr` sau `auto` (urmează limba din Home Assistant). |
 | `theme` | `dark` | `dark` sau `light`. |
 | `columns` | auto | Module pe șină. Auto = cel mai lung rând. |
 | `max` | `6000` | Puterea maximă implicită (W) pentru module fără amperaj. |
@@ -182,6 +172,8 @@ rows:
 ## Traduceri
 
 Traducerile se află în obiectul `I18N` de la începutul fișierului [`dist/electrical-panel-card.js`](dist/electrical-panel-card.js). Pentru o limbă nouă, copiază blocul `en`, tradu valorile (păstrează cheile), rulează `node scripts/check-i18n.js` și deschide un pull request. Limba apare automat în editor.
+
+Mulțumiri lui [@Nono01360](https://github.com/Nono01360) pentru traducerea în franceză.
 
 ## Dezvoltare
 
