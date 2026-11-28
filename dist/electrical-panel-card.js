@@ -4,7 +4,7 @@
  * Languages: English (default), Română, and Français (thanks to @Nono01360). Set `language: auto` to follow the Home Assistant language.
  * No external dependencies. License: MIT.
  */
-const VERSION = '1.0.4';
+const VERSION = '1.0.5';
 const SW = 108;   // latimea unui slot (unitati SVG)
 const MH = 200;   // inaltimea unui modul
 const SQ3 = Math.sqrt(3);
@@ -72,6 +72,9 @@ const I18N = {
     'ed.ent.current': 'Current sensor (A) – optional', 'ed.ent.temp': 'Temperature sensor – optional',
     'ed.ent.fault': 'Fault sensor – optional (breaker turns OrangeRed)', 'ed.fault_state': 'Fault active when state is… (empty = on)',
     'ed.fault_blink': 'Blink while a fault is active', 'ed.fault_blink_mod': 'Blink on fault', 'ed.blink.yes': 'Blink', 'ed.blink.no': 'Don\u2019t blink',
+    'ed.fault_text': 'Show the fault message on the LCD', 'ed.fault_ok': 'States meaning "no fault" (comma-separated, optional)',
+    'ed.fault_attr': 'Attribute holding the fault code (optional)', 'ed.fault_map': 'Fault messages (one per line: code = text)',
+    'fault.generic': 'Fault', 'fault.code': 'Error {c}',
     'ed.sensors_hint': 'Voltage, current and temperature show on the LCD only when set. Without a consumption sensor, power is computed as voltage × current (1P/2P only).',
     'ed.hint.rated': 'Rated power: {kw} kW ({k}{v} V × {a} A) · yellow from {y} W · red from {r} W',
     'ed.hint.manual': 'Max power: {m} W (set the current rating to compute it automatically) · yellow from {y} W · red from {r} W',
@@ -116,6 +119,9 @@ const I18N = {
     'ed.ent.current': 'Senzor curent (A) – opțional', 'ed.ent.temp': 'Senzor temperatură – opțional',
     'ed.ent.fault': 'Senzor defect – opțional (siguranța devine OrangeRed)', 'ed.fault_state': 'Defect activ când starea este… (gol = on)',
     'ed.fault_blink': 'Pâlpâie cât timp există un defect', 'ed.fault_blink_mod': 'Pâlpâire la defect', 'ed.blink.yes': 'Pâlpâie', 'ed.blink.no': 'Nu pâlpâi',
+    'ed.fault_text': 'Afișează mesajul de defect pe LCD', 'ed.fault_ok': 'Stări care înseamnă „fără defect” (separate prin virgulă, opțional)',
+    'ed.fault_attr': 'Atribut cu codul de defect (opțional)', 'ed.fault_map': 'Mesaje de defect (câte unul pe linie: cod = text)',
+    'fault.generic': 'Defect', 'fault.code': 'Eroare {c}',
     'ed.sensors_hint': 'Tensiunea, curentul și temperatura apar în LCD doar dacă sunt setate. Fără senzor de consum, puterea se calculează din tensiune × curent (doar la 1P/2P).',
     'ed.hint.rated': 'Putere nominală: {kw} kW ({k}{v} V × {a} A) · galben de la {y} W · roșu de la {r} W',
     'ed.hint.manual': 'Putere maximă: {m} W (setează amperajul ca să se calculeze automat) · galben de la {y} W · roșu de la {r} W',
@@ -160,6 +166,9 @@ const I18N = {
     'ed.ent.current': 'Capteur d\u2019intensité (A) – facultatif', 'ed.ent.temp': 'Capteur de température – facultatif',
     'ed.ent.fault': 'Capteur de défaut – facultatif (le disjoncteur devient rouge orangé)', 'ed.fault_state': 'Défaut actif quand l\u2019état est… (vide = on)',
     'ed.fault_blink': 'Clignoter tant qu\u2019un défaut est actif', 'ed.fault_blink_mod': 'Clignotement en cas de défaut', 'ed.blink.yes': 'Clignoter', 'ed.blink.no': 'Ne pas clignoter',
+    'ed.fault_text': 'Afficher le message de défaut sur le LCD', 'ed.fault_ok': 'États signifiant « aucun défaut » (séparés par des virgules, facultatif)',
+    'ed.fault_attr': 'Attribut contenant le code de défaut (facultatif)', 'ed.fault_map': 'Messages de défaut (un par ligne : code = texte)',
+    'fault.generic': 'Défaut', 'fault.code': 'Erreur {c}',
     'ed.sensors_hint': 'La tension, l\u2019intensité et la température s\u2019affichent sur le LCD uniquement si elles sont définies. Sans capteur de consommation, la puissance est calculée par tension × intensité (1P/2P uniquement).',
     'ed.hint.rated': 'Puissance nominale : {kw} kW ({k}{v} V × {a} A) · jaune dès {y} W · rouge dès {r} W',
     'ed.hint.manual': 'Puissance max. : {m} W (définissez le calibre en ampères pour la calculer automatiquement) · jaune dès {y} W · rouge dès {r} W',
@@ -191,6 +200,40 @@ function pickLang(cfg, hass) {
   return 'en';
 }
 
+
+/* ---------- fault messages: well-known codes -> readable text (anything else is prettified) ---------- */
+const FAULT_OK = ['', 'none', 'null', 'normal', 'ok', 'off', 'false', 'no', 'clear', '0', '0.0', '[]', '{}'];
+const FAULT_BINARY = ['binary_sensor', 'input_boolean', 'switch', 'light', 'automation'];
+const FAULT_ON = ['on', 'true', 'fault', 'problem', 'tripped', 'alarm', 'triggered'];
+const FAULT_LABELS = [
+  [['short_circuit_alarm', 'short_circuit', 'short-circuit'], { en: 'Short circuit', ro: 'Scurtcircuit', fr: 'Court-circuit' }],
+  [['overload_alarm', 'overload'], { en: 'Overload', ro: 'Suprasarcină', fr: 'Surcharge' }],
+  [['ov_cr', 'overcurrent', 'over_current'], { en: 'Overcurrent', ro: 'Supracurent', fr: 'Surintensité' }],
+  [['ov_vol', 'overvoltage', 'over_voltage'], { en: 'Overvoltage', ro: 'Supratensiune', fr: 'Surtension' }],
+  [['surge_alarm', 'surge'], { en: 'Surge', ro: 'Supratensiune tranzitorie', fr: 'Surtension transitoire' }],
+  [['undervoltage_alarm', 'undervoltage', 'under_voltage'], { en: 'Undervoltage', ro: 'Subtensiune', fr: 'Sous-tension' }],
+  [['leakagecurr_alarm', 'leakage_alarm', 'leakage'], { en: 'Leakage current', ro: 'Curent de scurgere', fr: 'Courant de fuite' }],
+  [['ground_fault', 'earth_fault'], { en: 'Ground fault', ro: 'Defect la pământ', fr: 'Défaut de terre' }],
+  [['temp_dif_fault', 'overtemperature', 'over_temp', 'overheat'], { en: 'Over-temperature', ro: 'Temperatură ridicată', fr: 'Surchauffe' }],
+  [['fire_alarm'], { en: 'Fire alarm', ro: 'Alarmă de incendiu', fr: 'Alarme incendie' }],
+  [['high_power_alarm', 'high_power'], { en: 'High power', ro: 'Putere ridicată', fr: 'Puissance élevée' }],
+  [['self_test_alarm', 'self_test'], { en: 'Self-test fault', ro: 'Eroare autotestare', fr: 'Défaut d\u2019autotest' }],
+  [['unbalance_alarm', 'unbalance'], { en: 'Unbalance', ro: 'Dezechilibru', fr: 'Déséquilibre' }],
+  [['miss_phase_alarm', 'phase_loss'], { en: 'Phase loss', ro: 'Lipsă fază', fr: 'Perte de phase' }],
+  [['outage_alarm', 'power_outage'], { en: 'Power outage', ro: 'Pană de curent', fr: 'Coupure de courant' }],
+  [['magnetism_alarm'], { en: 'Magnetic fault', ro: 'Defect magnetic', fr: 'Défaut magnétique' }],
+  [['credit_alarm', 'no_balance_alarm'], { en: 'Low credit', ro: 'Credit scăzut', fr: 'Crédit faible' }],
+];
+
+/** Readable text for a fault code: user map (`fault_map`) -> known codes -> numeric "Error N" -> prettified code. */
+function faultLabel(code, lang, map) {
+  const raw = String(code).trim();
+  const key = raw.toLowerCase();
+  if (map) { for (const k of Object.keys(map)) { if (k.toLowerCase() === key) return String(map[k]); } }
+  for (const [ids, t] of FAULT_LABELS) { if (ids.includes(key)) return t[lang] || t.en; }
+  if (/^-?\d+(\.\d+)?$/.test(raw)) return tr(lang, 'fault.code', { c: raw });
+  return raw.replace(/[_-]+/g, ' ');
+}
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -249,7 +292,7 @@ function layout(config, lang) {
   const cfg = Object.assign({
     show_title: true, theme: 'dark', show_ducts: true,
     show_lcd: true, show_ratings: true, fill_blanks: true, readonly: false,
-    max: 6000, display: 'power', fault_blink: false,
+    max: 6000, display: 'power', fault_blink: false, fault_text: true,
   }, config);
   if (cfg.title === undefined) cfg.title = tr(lang || 'en', 'title');
   const rows = (cfg.rows || []).map((r) => {
@@ -364,7 +407,7 @@ function buildSvg(L, uid) {
     if (m.type === 'meter') {
       const ly = y0 + 48, lh = 66;
       a(`<rect x="${x + 8}" y="${ly}" width="${pw}" height="${lh}" rx="3" fill="url(#${id('lcd')})" stroke="#000" stroke-width="1"/>`);
-      a(`<text class="lcdt" x="${cx}" y="${ly + 21}" text-anchor="middle" font-family="monospace" font-size="${w > 150 ? 20 : 15}" font-weight="700" fill="${COL.on}">--</text>`);
+      a(`<text class="lcdt" data-tw="${pw - 10}" x="${cx}" y="${ly + 21}" text-anchor="middle" font-family="monospace" font-size="${w > 150 ? 20 : 15}" font-weight="700" fill="${COL.on}">--</text>`);
       a(`<text class="lcde" x="${cx}" y="${ly + 33}" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700" fill="#9aa7a0"></text>`);
       a(`<text class="lcds" x="${cx}" y="${ly + 45}" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700"><tspan class="lv"></tspan><tspan class="lc"></tspan></text>`);
       a(`<text class="lt" x="${cx}" y="${ly + 57}" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700" fill="#ffb27f"></text>`);
@@ -401,7 +444,7 @@ function buildSvg(L, uid) {
         const own = m._lines === 0 ? 0 : 16 + (m._lines - 1) * 12;
         const dy = (m.extra - own) / 2;
         a(`<rect x="${x + 8}" y="${ly}" width="${pw}" height="${lh}" rx="3" fill="url(#${id('lcd')})" stroke="#000" stroke-width="1"/>`);
-        a(`<text class="lcdt" x="${cx}" y="${ly + 14 + dy}" text-anchor="middle" font-family="monospace" font-size="${w > 150 ? 15 : 13}" font-weight="700" fill="${COL.on}">--</text>`);
+        a(`<text class="lcdt" data-tw="${pw - 10}" x="${cx}" y="${ly + 14 + dy}" text-anchor="middle" font-family="monospace" font-size="${w > 150 ? 15 : 13}" font-weight="700" fill="${COL.on}">--</text>`);
         a(`<rect x="${x + 14}" y="${ly + 17.5 + dy}" width="${pw - 12}" height="2.5" rx="1" fill="#fff" fill-opacity=".12"/>`);
         a(`<rect class="lcdb" x="${x + 14}" y="${ly + 17.5 + dy}" width="0" height="2.5" rx="1" fill="${COL.on}" data-maxw="${pw - 12}"/>`);
         if (m._hasVA) a(`<text class="lcds" x="${cx}" y="${ly + 32 + dy}" text-anchor="middle" font-family="monospace" font-size="10" font-weight="700"><tspan class="lv"></tspan><tspan class="lc"></tspan></text>`);
@@ -416,7 +459,7 @@ function buildSvg(L, uid) {
     lines.forEach((ln, k) => {
       a(`<text x="${cx}" y="${c - th / 2 + fs * 0.85 + k * fs * 1.15}" text-anchor="middle" ${F} font-size="${fs}" font-weight="${k === 0 ? 700 : 600}" fill="#16181c">${esc(ln)}</text>`);
     });
-    a(`<rect class="hit" x="${x}" y="${y0 + 44}" width="${w}" height="112" fill="#000" fill-opacity="0" style="cursor:${m.entity ? 'pointer' : 'default'};touch-action:manipulation"/>`);
+    a(`<rect class="hit" x="${x}" y="${y0 + 44}" width="${w}" height="112" fill="#000" fill-opacity="0" style="cursor:${m.entity ? 'pointer' : 'default'};touch-action:manipulation"><title class="tip"></title></rect>`);
     a(`</g>`);
   });
   a('</svg>');
@@ -530,7 +573,7 @@ class ElectricalPanelCard extends HTMLElement {
         m, knobs: [...g.querySelectorAll('.knob')], leds: [...g.querySelectorAll('.led')], ledgs: [...g.querySelectorAll('.ledg')],
         lcdt: g.querySelector('.lcdt'), lcde: g.querySelector('.lcde'), lcdb: g.querySelector('.lcdb'),
         lv: g.querySelector('.lv'), lc: g.querySelector('.lc'), lt: g.querySelector('.lt'),
-        body: g.querySelector('.body'), flt: g.querySelector('.flt'), sig: null,
+        body: g.querySelector('.body'), flt: g.querySelector('.flt'), tip: g.querySelector('.tip'), sig: null,
       };
       const hit = g.querySelector('.hit');
       let timer = null, fired = false;
@@ -575,13 +618,30 @@ class ElectricalPanelCard extends HTMLElement {
     this._hass.callService('homeassistant', 'toggle', { entity_id: m.entity });
   }
 
-  /** Fault sensor is active when its state is on/true/fault/problem/tripped/alarm/triggered, or equals `fault_state` if set. */
-  _isFault(s, m) {
-    if (!s) return false;
-    const st = String(s.state).toLowerCase();
-    if (st === 'unavailable' || st === 'unknown') return false;
-    if (m.fault_state !== undefined && m.fault_state !== null && m.fault_state !== '') return st === String(m.fault_state).toLowerCase();
-    return ['on', 'true', 'fault', 'problem', 'tripped', 'alarm', 'triggered'].includes(st);
+  /** Evaluates the fault sensor: { active, text, raw }.
+   *  binary_sensor / input_boolean / switch: active on `on`/`true`/... ; sensor / text / select: active for any value that is not "ok"
+   *  (empty, none, normal, ok, off, false, 0...). Overridable with `fault_state` (exact match) or `fault_ok` (list of "no fault" states). */
+  _faultInfo(s, m) {
+    if (!s) return { active: false };
+    const raw = String(s.state);
+    const st = raw.trim().toLowerCase();
+    if (st === 'unavailable' || st === 'unknown') return { active: false };
+    const binary = FAULT_BINARY.includes(String(m.fault_sensor).split('.')[0]);
+    let active;
+    if (m.fault_state !== undefined && m.fault_state !== null && m.fault_state !== '') active = st === String(m.fault_state).toLowerCase();
+    else if (m.fault_ok !== undefined && m.fault_ok !== null && m.fault_ok !== '') {
+      const ok = (Array.isArray(m.fault_ok) ? m.fault_ok : String(m.fault_ok).split(',')).map((x) => String(x).trim().toLowerCase());
+      active = !ok.includes(st);
+    } else active = binary ? FAULT_ON.includes(st) : !FAULT_OK.includes(st);
+    if (!active) return { active: false };
+    let codes = binary ? '' : raw;
+    if (m.fault_attribute) {
+      const av = s.attributes ? s.attributes[m.fault_attribute] : undefined;
+      if (av !== undefined && av !== null) codes = Array.isArray(av) ? av.join(',') : String(av);
+    }
+    const parts = String(codes).split(/[,;|]/).map((x) => x.trim()).filter((x) => x && !FAULT_OK.includes(x.toLowerCase()));
+    const text = parts.length ? parts.map((p) => faultLabel(p, this._lang, m.fault_map)).join(' · ') : tr(this._lang, 'fault.generic');
+    return { active: true, text, raw: parts.join(', ') };
   }
 
   _scaled(entityId, base) {
@@ -619,7 +679,9 @@ class ElectricalPanelCard extends HTMLElement {
       const sig = `${es ? es.state : '-'}|${ps ? ps.state : '-'}|${xs ? xs.state : '-'}|${vss ? vss.state : '-'}|${css ? css.state : '-'}|${tss ? tss.state : '-'}|${fss ? fss.state : '-'}`;
       if (sig === r.sig) return;
       r.sig = sig;
-      const fault = this._isFault(fss, m);
+      const fi = this._faultInfo(fss, m);
+      const fault = fi.active;
+      if (r.tip) r.tip.textContent = fault ? `${m.name || ''}: ${fi.text}${fi.raw ? ' (' + fi.raw + ')' : ''}` : (m.name || '');
       if (r.body) r.body.setAttribute('fill', `url(#${fault ? 'fault' : 'mod'}${this._uid})`);
       if (r.flt) r.flt.style.display = fault ? '' : 'none';
       const blink = fault && ((m.fault_blink !== undefined && m.fault_blink !== '' && m.fault_blink !== null) ? !!m.fault_blink : !!cfg.fault_blink);
@@ -650,6 +712,10 @@ class ElectricalPanelCard extends HTMLElement {
             pct = offLike ? 0 : Math.max(0, Math.min(1, w / m._max));
           }
         } else { txt = state === 'on' ? 'ON' : state === 'off' ? 'OFF' : 'N/A'; col = COL[state]; }
+        if (fault && fi.text && cfg.fault_text !== false) { txt = fi.text.toUpperCase(); col = '#ff5a1f'; }
+        const fsz = parseFloat(r.lcdt.getAttribute('font-size')) || 13, tw = parseFloat(r.lcdt.getAttribute('data-tw')) || 80;
+        if (txt.length * fsz * 0.62 > tw) { r.lcdt.setAttribute('textLength', tw); r.lcdt.setAttribute('lengthAdjust', 'spacingAndGlyphs'); }
+        else { r.lcdt.removeAttribute('textLength'); r.lcdt.removeAttribute('lengthAdjust'); }
         r.lcdt.textContent = txt; r.lcdt.setAttribute('fill', col);
         if (r.lcdb) { r.lcdb.setAttribute('width', (pct * parseFloat(r.lcdb.dataset.maxw)).toFixed(1)); r.lcdb.setAttribute('fill', col); }
       }
@@ -709,6 +775,7 @@ const EDITOR_CSS = `
 label.f{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--secondary-text-color)}
 label.c{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--primary-text-color)}
 input[type=text],input[type=number],select{padding:8px;border:1px solid var(--divider-color);border-radius:6px;background:var(--card-background-color);color:var(--primary-text-color);font-size:14px;width:100%}
+textarea{padding:8px;border:1px solid var(--divider-color);border-radius:6px;background:var(--card-background-color);color:var(--primary-text-color);font-size:13px;width:100%;font-family:monospace;resize:vertical}
 input[type=color]{width:100%;height:36px;border:1px solid var(--divider-color);border-radius:6px;background:var(--card-background-color);padding:2px}
 button{padding:7px 11px;border:1px solid var(--divider-color);border-radius:6px;background:var(--card-background-color);color:var(--primary-text-color);cursor:pointer;font-size:13px}
 button:hover{border-color:var(--primary-color)}
@@ -814,6 +881,23 @@ class ElectricalPanelCardEditor extends HTMLElement {
     return f;
   }
 
+  _map(label, value, cb) {
+    const ta = el('textarea', { attrs: { rows: 3, placeholder: 'short_circuit_alarm = Short circuit\n4 = Overload' } });
+    ta.value = Object.entries(value || {}).map(([k, v]) => `${k} = ${v}`).join('\n');
+    ta.addEventListener('input', () => {
+      const o = {};
+      ta.value.split('\n').forEach((ln) => {
+        const i = ln.indexOf('=');
+        if (i > 0) { const k = ln.slice(0, i).trim(), v = ln.slice(i + 1).trim(); if (k && v) o[k] = v; }
+      });
+      cb(Object.keys(o).length ? o : undefined);
+      this._emit();
+    });
+    const f = el('label', { class: 'f' }, el('span', { text: label }), ta);
+    f.style.gridColumn = '1 / -1';
+    return f;
+  }
+
   _select(label, opts, value, cb) {
     const s = el('select', {}, opts.map((o) => el('option', { text: o.t, attrs: { value: o.v } })));
     s.value = value === undefined || value === null ? '' : String(value);
@@ -890,7 +974,7 @@ class ElectricalPanelCardEditor extends HTMLElement {
       flag('show_title', this._t('ed.show_title'), true), flag('show_ducts', this._t('ed.show_ducts'), true),
       flag('show_lcd', this._t('ed.show_lcd'), true), flag('show_ratings', this._t('ed.show_ratings'), true),
       flag('fill_blanks', this._t('ed.fill_blanks'), true), flag('readonly', this._t('ed.readonly'), false),
-      flag('confirm', this._t('ed.confirm'), false), flag('fault_blink', this._t('ed.fault_blink'), false),
+      flag('confirm', this._t('ed.confirm'), false), flag('fault_blink', this._t('ed.fault_blink'), false), flag('fault_text', this._t('ed.fault_text'), true),
     );
     body.append(ck);
     sec.append(body);
@@ -1047,6 +1131,9 @@ class ElectricalPanelCardEditor extends HTMLElement {
     gc.append(this._text(this._t('ed.t_yellow'), m.temp_yellow, (v) => { m.temp_yellow = v; }, { number: true, placeholder: '60' }));
     gc.append(this._text(this._t('ed.t_red'), m.temp_red, (v) => { m.temp_red = v; }, { number: true, placeholder: '80' }));
     gc.append(this._text(this._t('ed.fault_state'), m.fault_state, (v) => { m.fault_state = v; }, { placeholder: 'on' }));
+    gc.append(this._text(this._t('ed.fault_ok'), Array.isArray(m.fault_ok) ? m.fault_ok.join(', ') : m.fault_ok, (v) => { m.fault_ok = v; }, { placeholder: 'normal, ok, 0' }));
+    gc.append(this._text(this._t('ed.fault_attr'), m.fault_attribute, (v) => { m.fault_attribute = v; }, { placeholder: 'fault' }));
+    gc.append(this._map(this._t('ed.fault_map'), m.fault_map, (v) => { m.fault_map = v; }));
     gc.append(this._select(this._t('ed.fault_blink_mod'), [{ v: '', t: this._t('ed.same_general') }, { v: 'true', t: this._t('ed.blink.yes') }, { v: 'false', t: this._t('ed.blink.no') }],
       m.fault_blink === undefined || m.fault_blink === '' ? '' : String(m.fault_blink),
       (v) => { if (v === '') delete m.fault_blink; else m.fault_blink = (v === 'true'); this._emit(); }));

@@ -120,6 +120,7 @@ rows:
 | `readonly` | `false` | Atingerea deschide detaliile în loc să comute. |
 | `confirm` | `false` | Cere confirmare înainte de comutare (toate siguranțele). |
 | `fault_blink` | `false` |  Semnalizeaza animat sigurantele cu probleme. |
+| `fault_text` | `true` |  Arata text pentru eroare.  |
 
 ### Rând
 
@@ -152,6 +153,7 @@ rows:
 | `confirm` | `true` / `false` – suprascrie confirmarea de la nivel de card. |
 | `confirm_off` | `true` – întreabă doar la **oprire**. |
 | `fault_sensor` / `fault_state`|  Optional fault sensor pentru fiecare modul. |
+| `fault_ok` / `fault_attribute` / `fault_map` / `fault_text` |  Coduri de eroare:  orice valoare non OK reprezinta eroare. |
 
 ### Modele
 

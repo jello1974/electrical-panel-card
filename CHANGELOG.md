@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.5
+- Fault codes: any non-ok value of a sensor is a fault; the LCD shows a readable message (known codes translated EN/RO/FR, fault_map for your own); tooltip with the raw code; options fault_ok, fault_attribute, fault_map, fault_text.
+
 ## 1.0.4
 - Optional fault sensor per module (`fault_sensor`, `fault_state`): the breaker turns OrangeRed and shows a warning badge while the fault is active.
 - Optional blinking for faulted breakers (`fault_blink`, global or per module). Disabled automatically when the device prefers reduced motion.

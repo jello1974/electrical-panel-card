@@ -120,6 +120,7 @@ rows:
 | `readonly` | `false` | Tap opens details instead of switching. |
 | `confirm` | `false` | Ask for confirmation before switching (all breakers). |
 | `fault_blink` | `false` | Blink faulted breakers. |
+| `fault_text` | `true` | Show fault text. |
 
 ### Row
 
@@ -152,6 +153,7 @@ rows:
 | `confirm` | `true` / `false` – override the card-level confirmation. |
 | `confirm_off` | `true` – ask only when turning **off**. |
 | `fault_sensor` / `fault_state`| Optional fault sensor per module. |
+| `fault_ok` / `fault_attribute` / `fault_map` / `fault_text` | Fault codes: any non-ok value of a sensor is a fault. |
 
 ### Models
 
