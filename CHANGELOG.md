@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.4
+- Optional fault sensor per module (`fault_sensor`, `fault_state`): the breaker turns OrangeRed and shows a warning badge while the fault is active.
+- Optional blinking for faulted breakers (`fault_blink`, global or per module). Disabled automatically when the device prefers reduced motion.
+- Translations for the new options (EN / RO / FR).
+
 ## 1.0.3
 - Card picker description now lists the supported languages (EN / RO / FR).
 - Documentation: English is the default language; `language: auto` follows the Home Assistant language. French added to the READMEs.

@@ -119,6 +119,7 @@ rows:
 | `fill_blanks` | `true` | Fill incomplete rails with blank covers. |
 | `readonly` | `false` | Tap opens details instead of switching. |
 | `confirm` | `false` | Ask for confirmation before switching (all breakers). |
+| `fault_blink` | `false` | Blink faulted breakers. |
 
 ### Row
 
@@ -150,6 +151,7 @@ rows:
 | `tap_action` | `toggle` (default), `more-info` or `none`. |
 | `confirm` | `true` / `false` – override the card-level confirmation. |
 | `confirm_off` | `true` – ask only when turning **off**. |
+| `fault_sensor` / `fault_state`| Optional fault sensor per module. |
 
 ### Models
 

@@ -4,7 +4,7 @@
  * Languages: English (default), Română, and Français (thanks to @Nono01360). Set `language: auto` to follow the Home Assistant language.
  * No external dependencies. License: MIT.
  */
-const VERSION = '1.0.3';
+const VERSION = '1.0.4';
 const SW = 108;   // latimea unui slot (unitati SVG)
 const MH = 200;   // inaltimea unui modul
 const SQ3 = Math.sqrt(3);
@@ -70,6 +70,8 @@ const I18N = {
     'ed.ent.switch': 'Switch entity (switch/light)', 'ed.ent.power': 'Consumption sensor (W)', 'ed.ent.power_total': 'Total power sensor',
     'ed.ent.energy': 'Energy sensor (kWh) – optional', 'ed.ent.voltage': 'Voltage sensor (V) – optional',
     'ed.ent.current': 'Current sensor (A) – optional', 'ed.ent.temp': 'Temperature sensor – optional',
+    'ed.ent.fault': 'Fault sensor – optional (breaker turns OrangeRed)', 'ed.fault_state': 'Fault active when state is… (empty = on)',
+    'ed.fault_blink': 'Blink while a fault is active', 'ed.fault_blink_mod': 'Blink on fault', 'ed.blink.yes': 'Blink', 'ed.blink.no': 'Don\u2019t blink',
     'ed.sensors_hint': 'Voltage, current and temperature show on the LCD only when set. Without a consumption sensor, power is computed as voltage × current (1P/2P only).',
     'ed.hint.rated': 'Rated power: {kw} kW ({k}{v} V × {a} A) · yellow from {y} W · red from {r} W',
     'ed.hint.manual': 'Max power: {m} W (set the current rating to compute it automatically) · yellow from {y} W · red from {r} W',
@@ -112,6 +114,8 @@ const I18N = {
     'ed.ent.switch': 'Entitate comutare (switch/light)', 'ed.ent.power': 'Senzor consum (W)', 'ed.ent.power_total': 'Senzor putere totală',
     'ed.ent.energy': 'Senzor energie (kWh) – opțional', 'ed.ent.voltage': 'Senzor tensiune (V) – opțional',
     'ed.ent.current': 'Senzor curent (A) – opțional', 'ed.ent.temp': 'Senzor temperatură – opțional',
+    'ed.ent.fault': 'Senzor defect – opțional (siguranța devine OrangeRed)', 'ed.fault_state': 'Defect activ când starea este… (gol = on)',
+    'ed.fault_blink': 'Pâlpâie cât timp există un defect', 'ed.fault_blink_mod': 'Pâlpâire la defect', 'ed.blink.yes': 'Pâlpâie', 'ed.blink.no': 'Nu pâlpâi',
     'ed.sensors_hint': 'Tensiunea, curentul și temperatura apar în LCD doar dacă sunt setate. Fără senzor de consum, puterea se calculează din tensiune × curent (doar la 1P/2P).',
     'ed.hint.rated': 'Putere nominală: {kw} kW ({k}{v} V × {a} A) · galben de la {y} W · roșu de la {r} W',
     'ed.hint.manual': 'Putere maximă: {m} W (setează amperajul ca să se calculeze automat) · galben de la {y} W · roșu de la {r} W',
@@ -154,6 +158,8 @@ const I18N = {
     'ed.ent.switch': 'Entité de commutation (switch/light)', 'ed.ent.power': 'Capteur de consommation (W)', 'ed.ent.power_total': 'Capteur de puissance totale',
     'ed.ent.energy': 'Capteur d\u2019énergie (kWh) – facultatif', 'ed.ent.voltage': 'Capteur de tension (V) – facultatif',
     'ed.ent.current': 'Capteur d\u2019intensité (A) – facultatif', 'ed.ent.temp': 'Capteur de température – facultatif',
+    'ed.ent.fault': 'Capteur de défaut – facultatif (le disjoncteur devient rouge orangé)', 'ed.fault_state': 'Défaut actif quand l\u2019état est… (vide = on)',
+    'ed.fault_blink': 'Clignoter tant qu\u2019un défaut est actif', 'ed.fault_blink_mod': 'Clignotement en cas de défaut', 'ed.blink.yes': 'Clignoter', 'ed.blink.no': 'Ne pas clignoter',
     'ed.sensors_hint': 'La tension, l\u2019intensité et la température s\u2019affichent sur le LCD uniquement si elles sont définies. Sans capteur de consommation, la puissance est calculée par tension × intensité (1P/2P uniquement).',
     'ed.hint.rated': 'Puissance nominale : {kw} kW ({k}{v} V × {a} A) · jaune dès {y} W · rouge dès {r} W',
     'ed.hint.manual': 'Puissance max. : {m} W (définissez le calibre en ampères pour la calculer automatiquement) · jaune dès {y} W · rouge dès {r} W',
@@ -243,7 +249,7 @@ function layout(config, lang) {
   const cfg = Object.assign({
     show_title: true, theme: 'dark', show_ducts: true,
     show_lcd: true, show_ratings: true, fill_blanks: true, readonly: false,
-    max: 6000, display: 'power',
+    max: 6000, display: 'power', fault_blink: false,
   }, config);
   if (cfg.title === undefined) cfg.title = tr(lang || 'en', 'title');
   const rows = (cfg.rows || []).map((r) => {
@@ -300,7 +306,9 @@ function buildSvg(L, uid) {
 <linearGradient id="${id('term')}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8b919b"/><stop offset="1" stop-color="#5a5f68"/></linearGradient>
 <linearGradient id="${id('lcd')}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a0d0f"/><stop offset="1" stop-color="#1a2024"/></linearGradient>
 <linearGradient id="${id('knob')}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7b818c"/><stop offset="1" stop-color="#2a2d33"/></linearGradient>
+<linearGradient id="${id('fault')}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e63e00"/><stop offset=".3" stop-color="#ff6a3d"/><stop offset=".7" stop-color="#ff4500"/><stop offset="1" stop-color="#c93600"/></linearGradient>
 </defs>`);
+  a('<style>@keyframes epcpulse{0%,100%{opacity:1}50%{opacity:.5}}.blink{animation:epcpulse 1.1s ease-in-out infinite}@media (prefers-reduced-motion:reduce){.blink{animation:none}}</style>');
   a(`<rect x="4" y="4" width="${W - 8}" height="${H - 8}" rx="16" fill="url(#${id('enc')})" stroke="${T.encStroke}" stroke-width="2"/>`);
   a(`<rect x="14" y="14" width="${W - 28}" height="${H - 28}" rx="10" fill="url(#${id('back')})" stroke="#000" stroke-opacity=".6" stroke-width="2"/>`);
   [[22, 22], [W - 22, 22], [22, H - 22], [W - 22, H - 22]].forEach(([sx, sy]) => {
@@ -341,8 +349,9 @@ function buildSvg(L, uid) {
     }
     const pw = w - 16;
     a(`<g data-i="${m.idx}">`);
-    a(`<rect x="${x}" y="${y0}" width="${w}" height="${m.mh}" rx="5" fill="url(#${id('mod')})" stroke="#6b6f78" stroke-width="1.2"/>`);
+    a(`<rect class="body" x="${x}" y="${y0}" width="${w}" height="${m.mh}" rx="5" fill="url(#${id('mod')})" stroke="#6b6f78" stroke-width="1.2"/>`);
     term(x, y0 + 5, w); term(x, y0 + m.mh - 16, w);
+    a(`<g class="flt" style="display:none"><path d="M${x + 14} ${y0 + 19} l7 12 h-14 z" fill="#fff" stroke="#7a1d00" stroke-width="1" stroke-linejoin="round"/><text x="${x + 14}" y="${y0 + 29.5}" text-anchor="middle" ${F} font-size="8" font-weight="800" fill="#c93600">!</text></g>`);
     if (m._showSpec) {
       const spec = [`${m._V}V`, (m.type !== 'meter' ? `${m.poles}P` : '')].filter(Boolean).join(' · ');
       a(`<text x="${cx}" y="${y0 + 24}" text-anchor="middle" ${F} font-size="8" font-weight="600" fill="#666">${esc(spec)}</text>`);
@@ -520,7 +529,8 @@ class ElectricalPanelCard extends HTMLElement {
       this._refs[m.idx] = {
         m, knobs: [...g.querySelectorAll('.knob')], leds: [...g.querySelectorAll('.led')], ledgs: [...g.querySelectorAll('.ledg')],
         lcdt: g.querySelector('.lcdt'), lcde: g.querySelector('.lcde'), lcdb: g.querySelector('.lcdb'),
-        lv: g.querySelector('.lv'), lc: g.querySelector('.lc'), lt: g.querySelector('.lt'), sig: null,
+        lv: g.querySelector('.lv'), lc: g.querySelector('.lc'), lt: g.querySelector('.lt'),
+        body: g.querySelector('.body'), flt: g.querySelector('.flt'), sig: null,
       };
       const hit = g.querySelector('.hit');
       let timer = null, fired = false;
@@ -565,6 +575,15 @@ class ElectricalPanelCard extends HTMLElement {
     this._hass.callService('homeassistant', 'toggle', { entity_id: m.entity });
   }
 
+  /** Fault sensor is active when its state is on/true/fault/problem/tripped/alarm/triggered, or equals `fault_state` if set. */
+  _isFault(s, m) {
+    if (!s) return false;
+    const st = String(s.state).toLowerCase();
+    if (st === 'unavailable' || st === 'unknown') return false;
+    if (m.fault_state !== undefined && m.fault_state !== null && m.fault_state !== '') return st === String(m.fault_state).toLowerCase();
+    return ['on', 'true', 'fault', 'problem', 'tripped', 'alarm', 'triggered'].includes(st);
+  }
+
   _scaled(entityId, base) {
     const s = entityId && this._hass.states[entityId];
     if (!s) return null;
@@ -596,9 +615,16 @@ class ElectricalPanelCard extends HTMLElement {
       const vss = m.voltage_sensor ? H.states[m.voltage_sensor] : null;
       const css = m.current_sensor ? H.states[m.current_sensor] : null;
       const tss = m.temp_sensor ? H.states[m.temp_sensor] : null;
-      const sig = `${es ? es.state : '-'}|${ps ? ps.state : '-'}|${xs ? xs.state : '-'}|${vss ? vss.state : '-'}|${css ? css.state : '-'}|${tss ? tss.state : '-'}`;
+      const fss = m.fault_sensor ? H.states[m.fault_sensor] : null;
+      const sig = `${es ? es.state : '-'}|${ps ? ps.state : '-'}|${xs ? xs.state : '-'}|${vss ? vss.state : '-'}|${css ? css.state : '-'}|${tss ? tss.state : '-'}|${fss ? fss.state : '-'}`;
       if (sig === r.sig) return;
       r.sig = sig;
+      const fault = this._isFault(fss, m);
+      if (r.body) r.body.setAttribute('fill', `url(#${fault ? 'fault' : 'mod'}${this._uid})`);
+      if (r.flt) r.flt.style.display = fault ? '' : 'none';
+      const blink = fault && ((m.fault_blink !== undefined && m.fault_blink !== '' && m.fault_blink !== null) ? !!m.fault_blink : !!cfg.fault_blink);
+      if (r.body) r.body.classList.toggle('blink', blink);
+      if (r.flt) r.flt.classList.toggle('blink', blink);
       const state = !m.entity ? 'on' : (!es || es.state === 'unavailable' || es.state === 'unknown') ? 'na' : es.state === 'on' ? 'on' : 'off';
       const c0 = COL[state];
       r.knobs.forEach((k) => { k.style.transform = `translateY(${state === 'on' ? 0 : state === 'off' ? 28 : 14}px)`; });
@@ -864,7 +890,7 @@ class ElectricalPanelCardEditor extends HTMLElement {
       flag('show_title', this._t('ed.show_title'), true), flag('show_ducts', this._t('ed.show_ducts'), true),
       flag('show_lcd', this._t('ed.show_lcd'), true), flag('show_ratings', this._t('ed.show_ratings'), true),
       flag('fill_blanks', this._t('ed.fill_blanks'), true), flag('readonly', this._t('ed.readonly'), false),
-      flag('confirm', this._t('ed.confirm'), false),
+      flag('confirm', this._t('ed.confirm'), false), flag('fault_blink', this._t('ed.fault_blink'), false),
     );
     body.append(ck);
     sec.append(body);
@@ -1007,6 +1033,7 @@ class ElectricalPanelCardEditor extends HTMLElement {
     ge.append(this._entity(this._t('ed.ent.voltage'), m.voltage_sensor, ['sensor'], (v) => { m.voltage_sensor = v; }));
     ge.append(this._entity(this._t('ed.ent.current'), m.current_sensor, ['sensor'], (v) => { m.current_sensor = v; }));
     ge.append(this._entity(this._t('ed.ent.temp'), m.temp_sensor, ['sensor'], (v) => { m.temp_sensor = v; }));
+    ge.append(this._entity(this._t('ed.ent.fault'), m.fault_sensor, ['binary_sensor', 'sensor', 'input_boolean', 'switch'], (v) => { m.fault_sensor = v; }));
     box.append(ge);
     box.append(el('div', { class: 'hint', text: this._t('ed.sensors_hint') }));
 
@@ -1019,6 +1046,10 @@ class ElectricalPanelCardEditor extends HTMLElement {
     gc.append(ymax, yyel, yred);
     gc.append(this._text(this._t('ed.t_yellow'), m.temp_yellow, (v) => { m.temp_yellow = v; }, { number: true, placeholder: '60' }));
     gc.append(this._text(this._t('ed.t_red'), m.temp_red, (v) => { m.temp_red = v; }, { number: true, placeholder: '80' }));
+    gc.append(this._text(this._t('ed.fault_state'), m.fault_state, (v) => { m.fault_state = v; }, { placeholder: 'on' }));
+    gc.append(this._select(this._t('ed.fault_blink_mod'), [{ v: '', t: this._t('ed.same_general') }, { v: 'true', t: this._t('ed.blink.yes') }, { v: 'false', t: this._t('ed.blink.no') }],
+      m.fault_blink === undefined || m.fault_blink === '' ? '' : String(m.fault_blink),
+      (v) => { if (v === '') delete m.fault_blink; else m.fault_blink = (v === 'true'); this._emit(); }));
     gc.append(this._select(this._t('ed.mod_display'), [{ v: '', t: this._t('ed.same_general') }, { v: 'power', t: this._t('ed.display.power') }, { v: 'current', t: this._t('ed.display.current') }], m.display || '', (v) => { m.display = v; this._emit(); }));
     box.append(gc);
 

@@ -119,6 +119,7 @@ rows:
 | `fill_blanks` | `true` | Completează șinele incomplete cu capace goale. |
 | `readonly` | `false` | Atingerea deschide detaliile în loc să comute. |
 | `confirm` | `false` | Cere confirmare înainte de comutare (toate siguranțele). |
+| `fault_blink` | `false` |  Semnalizeaza animat sigurantele cu probleme. |
 
 ### Rând
 
@@ -150,6 +151,7 @@ rows:
 | `tap_action` | `toggle` (implicit), `more-info` sau `none`. |
 | `confirm` | `true` / `false` – suprascrie confirmarea de la nivel de card. |
 | `confirm_off` | `true` – întreabă doar la **oprire**. |
+| `fault_sensor` / `fault_state`|  Optional fault sensor pentru fiecare modul. |
 
 ### Modele
 
